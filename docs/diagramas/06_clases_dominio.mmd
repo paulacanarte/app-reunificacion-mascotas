@@ -1,0 +1,118 @@
+classDiagram
+    direction TB
+    class Usuario {
+        +str id
+        +str nombre
+        +str correo
+        -str hash_contrasena
+        -str telefono
+        -set dispositivos_biometricos
+        +Rol rol
+        +EstadoCuenta estado
+        +crear(nombre, correo, contrasena, rol, telefono)$ Usuario
+        +verificar_contrasena(contrasena) bool
+        +habilitar_biometria(id_dispositivo)
+        +acepta_biometria(id_dispositivo) bool
+        +activar()
+        +suspender()
+        +bloquear()
+    }
+    class Ubicacion {
+        +float latitud
+        +float longitud
+        +distancia_km(otra) float
+        +aproximar(radio_m) Ubicacion
+    }
+    class Caracteristicas {
+        +str color
+        +Tamano tamano
+        +str raza
+        +str pelaje
+        +str senas
+    }
+    class Fotografia {
+        +str nombre_archivo
+        +int tamano_bytes
+        +bool es_principal
+        +validar()
+    }
+    class Mascota {
+        +str id
+        +str dueno_id
+        +str nombre
+        +Especie especie
+        +str sexo
+        +agregar_foto(foto)
+        +foto_principal() Fotografia
+        +validar()
+    }
+    class Reporte {
+        <<abstract>>
+        +str id
+        +str usuario_id
+        +Especie especie
+        +datetime fecha_evento
+        +EstadoReporte estado
+        +tipo()* TipoReporte
+        +cambiar_estado(nuevo)
+        +ubicacion_publica() Ubicacion
+    }
+    class ReportePerdida { +str mascota_id }
+    class ReporteEncontrada {
+        +str lugar_resguardo
+        +str refugio_id
+    }
+    class Coincidencia {
+        +float similitud
+        +float distancia_km
+        +EstadoCoincidencia estado
+        +confirmar()
+        +rechazar()
+        +registrar_entrega(usuario_id) bool
+    }
+    class Conversacion {
+        +list participantes
+        +agregar_mensaje(autor_id, texto) Mensaje
+    }
+    class Mensaje {
+        +str autor_id
+        +str texto
+        +datetime fecha
+    }
+    class Refugio {
+        +str nombre
+        +TipoPunto tipo
+        +int capacidad
+        +int ocupacion
+        +tiene_cupo() bool
+        +registrar_ingreso()
+    }
+    class Denuncia {
+        +str motivo
+        +bool resuelta
+        +gravedad() int
+        +resolver()
+    }
+    class RegistroModeracion {
+        +str admin_id
+        +AccionModeracion accion
+        +str objetivo_id
+        +str motivo
+        +datetime fecha
+    }
+    Usuario "1" --> "0..*" Mascota : registra
+    Mascota "1" *-- "1" Caracteristicas
+    Mascota "1" *-- "1..5" Fotografia
+    Reporte <|-- ReportePerdida
+    Reporte <|-- ReporteEncontrada
+    Reporte "1" *-- "1" Ubicacion
+    Reporte "1" *-- "0..5" Fotografia
+    Usuario "1" --> "0..*" Reporte : publica
+    ReportePerdida "0..*" --> "1" Mascota : sobre
+    ReporteEncontrada "0..*" --> "0..1" Refugio : resguardado en
+    Coincidencia "0..*" --> "1" ReportePerdida
+    Coincidencia "0..*" --> "1" ReporteEncontrada
+    Conversacion "0..1" --> "1" Coincidencia
+    Conversacion "1" *-- "0..*" Mensaje
+    Usuario "1" --> "0..*" Denuncia : presenta
+    Usuario "1" --> "0..*" RegistroModeracion : decide (admin)

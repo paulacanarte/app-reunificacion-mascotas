@@ -1,0 +1,41 @@
+classDiagram
+    direction LR
+    class RepositorioMongo {
+        <<abstract>>
+        #Collection coleccion
+        +guardar(entidad) str
+        +buscar_por_id(id) entidad
+        +listar(filtro) list
+        +eliminar(id)
+        #a_documento(entidad)* dict
+        #desde_documento(doc)* entidad
+    }
+    RepositorioMongo <|-- RepositorioUsuarios
+    RepositorioMongo <|-- RepositorioMascotas
+    RepositorioMongo <|-- RepositorioReportes
+    RepositorioMongo <|-- RepositorioCoincidencias
+    RepositorioMongo <|-- RepositorioConversaciones
+    RepositorioMongo <|-- RepositorioRefugios
+    RepositorioMongo <|-- RepositorioDenuncias
+    RepositorioMongo <|-- RepositorioRegistrosModeracion
+    class ComparadorSimilitud {
+        <<interface>>
+        +comparar(perdida, encontrada) float
+    }
+    ComparadorSimilitud <|.. ComparadorCaracteristicas
+    ComparadorSimilitud <|.. ComparadorCNN
+    class Notificador {
+        <<interface>>
+        +notificar(usuario_id, mensaje)
+    }
+    Notificador <|.. NotificadorConsola
+    ServicioUsuarios --> RepositorioUsuarios
+    ServicioMascotas --> RepositorioMascotas
+    ServicioReportes --> RepositorioReportes
+    ServicioReportes --> ServicioCoincidencias
+    ServicioCoincidencias --> RepositorioCoincidencias
+    ServicioCoincidencias --> ComparadorSimilitud
+    ServicioCoincidencias --> Notificador
+    ServicioMensajeria --> RepositorioConversaciones
+    ServicioModeracion --> RepositorioDenuncias
+    ServicioModeracion --> RepositorioRegistrosModeracion

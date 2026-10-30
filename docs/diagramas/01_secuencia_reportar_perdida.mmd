@@ -1,0 +1,28 @@
+sequenceDiagram
+    actor Dueño
+    participant App as App móvil
+    participant API as API REST
+    participant RS as ServicioReportes
+    participant Repo as RepositorioReportes
+    participant DB as MongoDB
+    participant CS as ServicioCoincidencias
+    Dueño->>App: Abre ficha y elige "Reportar como perdida"
+    App->>Dueño: Pide fecha, ubicación y descripción
+    Dueño->>App: Ingresa datos y confirma
+    alt Sin conexión
+        App->>App: Guarda reporte en cola local
+        App-->>Dueño: "Se publicará al recuperar señal"
+    else Con conexión
+        App->>API: POST /reportes (tipo=PERDIDA)
+        API->>RS: reportar_perdida(datos)
+        RS->>Repo: abierto_de_mascota(mascota_id)
+        Repo->>DB: find(reportes)
+        DB-->>Repo: ninguno
+        RS->>Repo: guardar(reporte)
+        Repo->>DB: insert_one(reportes)
+        DB-->>Repo: id
+        RS->>CS: buscar_coincidencias(reporte)
+        RS-->>API: reporte creado
+        API-->>App: 201 Created
+        App-->>Dueño: Reporte publicado
+    end
