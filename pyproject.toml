@@ -1,0 +1,10 @@
+[project]
+name = "mascotas-codigo5"
+version = "0.1.0"
+description = "Reunificación de mascotas perdidas tras un terremoto · Grupo Código 5"
+requires-python = ">=3.11"
+dependencies = ["pymongo>=4.6", "bcrypt>=4.1"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

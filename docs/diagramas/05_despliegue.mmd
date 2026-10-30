@@ -1,0 +1,30 @@
+flowchart LR
+    subgraph Movil["«device» Teléfono Android / iOS"]
+        App["«artifact» App móvil"]
+        Local[("«artifact» SQLite local<br/>cola sin conexión")]
+        App --- Local
+    end
+    subgraph Nube["«execution environment» Servidor de aplicaciones · Python 3.11"]
+        API["«artifact» API REST (FastAPI)"]
+        Serv["«component» Servicios"]
+        API --- Serv
+    end
+    subgraph IA["«execution environment» Servidor de coincidencias"]
+        Match["«artifact» ServicioCoincidencias"]
+        CNN["«artifact» Modelo CNN (PyTorch)"]
+        Match --- CNN
+    end
+    subgraph BD["«device» Clúster MongoDB Atlas"]
+        Mongo[("«database» mascotas_db")]
+        Grid[("«artifact» GridFS: fotografías")]
+    end
+    FCM["«external» Firebase Cloud Messaging"]
+    OSM["«external» OpenStreetMap"]
+    App -- "HTTPS / JSON" --> API
+    Serv -- "cola de tareas" --> Match
+    Serv -- "TLS" --> Mongo
+    Match -- "TLS" --> Mongo
+    Serv --> Grid
+    Serv -- "HTTPS" --> FCM
+    FCM -- "push" --> App
+    App -- "HTTPS" --> OSM
