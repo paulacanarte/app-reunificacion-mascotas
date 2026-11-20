@@ -16,13 +16,13 @@ const NOMBRE_ROL = {
 };
 
 const ACCIONES = [
-  { titulo: 'Reportar mascota perdida', detalle: 'Foto, última ubicación y descripción', tarea: 'C5-35' },
-  { titulo: 'Reportar animal encontrado', detalle: 'Foto, lugar del hallazgo y dónde está', tarea: 'C5-35' },
+  { titulo: 'Reportar mascota perdida', detalle: 'Foto, última ubicación y descripción', tipo: 'PERDIDA' },
+  { titulo: 'Reportar animal encontrado', detalle: 'Foto, lugar del hallazgo y dónde está', tipo: 'ENCONTRADA' },
   { titulo: 'Buscar mascotas', detalle: 'Por especie, rasgos, zona y fecha', tarea: 'C5-36' },
   { titulo: 'Ver mapa', detalle: 'Refugios, puntos de recepción y reportes', tarea: 'C5-37' },
 ];
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const { usuario, huellaActiva, activarHuella, salir } = useAuth();
   const { conectado, pendientes } = useConexion();
   const [cambiandoHuella, setCambiandoHuella] = useState(false);
@@ -62,7 +62,11 @@ export default function HomeScreen() {
             <Pressable
               key={a.titulo}
               accessibilityRole="button"
-              onPress={() => Alert.alert(a.titulo, `Esta pantalla se construye en la tarea ${a.tarea}.`)}
+              onPress={() =>
+                a.tipo
+                  ? navigation.navigate('Reporte', { tipo: a.tipo })
+                  : Alert.alert(a.titulo, `Esta pantalla se construye en la tarea ${a.tarea}.`)
+              }
               style={({ pressed }) => [estilos.accion, pressed && { opacity: 0.85 }]}
             >
               <Text style={estilos.tituloAccion}>{a.titulo}</Text>

@@ -82,6 +82,21 @@ export default function LoginScreen({ navigation }) {
             />
             <Boton titulo="Crear cuenta" variante="secundario" onPress={() => navigation.navigate('Registro')} />
           </View>
+
+          {/* RF04: en una emergencia se puede reportar sin crear cuenta. */}
+          <View style={estilos.sinCuenta}>
+            <Text style={texto.etiqueta}>¿Es urgente? Reporta sin crear cuenta</Text>
+            <Boton
+              titulo="Perdí mi mascota"
+              variante="secundario"
+              onPress={() => navigation.navigate('Reporte', { tipo: 'PERDIDA' })}
+            />
+            <Boton
+              titulo="Encontré un animal"
+              variante="secundario"
+              onPress={() => navigation.navigate('Reporte', { tipo: 'ENCONTRADA' })}
+            />
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -101,4 +116,11 @@ const estilos = StyleSheet.create({
   },
   error: { color: colores.alerta, fontSize: 14, marginBottom: espacio.m },
   acciones: { gap: espacio.m, marginTop: espacio.s },
+  sinCuenta: {
+    gap: espacio.m,
+    marginTop: espacio.xl,
+    paddingTop: espacio.l,
+    borderTopWidth: 1,
+    borderTopColor: colores.borde,
+  },
 });

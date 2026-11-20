@@ -61,6 +61,7 @@ Respuesta 200: el objeto `usuario` de la sesión actual.
 Ejemplo de reporte de pérdida:
 ```json
 {
+  "id_cliente": "6f1c2a9e-0b7d-4a51-9a3e-2d8f4c1b7e90",
   "mascota": { "nombre": "Toby", "especie": "PERRO", "raza": "Criollo", "color": "Café",
                "tamano": "MEDIANO", "senas": "Collar rojo" },
   "fotos": ["id-foto-1"],
@@ -69,8 +70,41 @@ Ejemplo de reporte de pérdida:
   "descripcion": "Se asustó con la réplica y salió corriendo"
 }
 ```
-La app genera un `id_cliente` (UUID) por reporte para que, si la cola sin conexión reintenta,
-el backend no lo guarde dos veces.
+
+Ejemplo de reporte de hallazgo (igual, sin `mascota.nombre` y con `estado_actual`):
+```json
+{
+  "id_cliente": "b2e7…",
+  "mascota": { "especie": "PERRO", "raza": "", "color": "Café", "tamano": "MEDIANO", "senas": "Collar rojo" },
+  "fotos": ["id-foto-2"],
+  "fecha": "2026-11-20T15:00:00-05:00",
+  "ubicacion": { "type": "Point", "coordinates": [-75.6955, 4.8150] },
+  "estado_actual": "CON_QUIEN_REPORTA",
+  "descripcion": "Está asustado pero sin heridas"
+}
+```
+- Valores: `especie` PERRO | GATO | OTRO; `tamano` PEQUENO | MEDIANO | GRANDE;
+  `estado_actual` CON_QUIEN_REPORTA | EN_REFUGIO | SIGUE_EN_EL_LUGAR.
+- `id_cliente` (UUID) lo genera la app. Si la cola sin conexión reintenta un reporte que ya llegó,
+  el backend debe devolver el mismo reporte en vez de guardarlo dos veces.
+- Sin cuenta (RF04) la petición va sin token y lleva `"contacto": { "nombre": "...", "telefono": "3001234567" }`.
+  Ese teléfono nunca se devuelve a otros usuarios (RF01).
+- `POST /fotos` recibe la foto en el campo `archivo` del formulario multipart. La app sube primero
+  las fotos y luego manda el reporte con sus ids.
+
+Respuesta 201 de `POST /reportes/perdidas`: `{ "reporte": { ...el reporte con "id" y "estado": "ACTIVO" } }`
+
+Respuesta 201 de `POST /reportes/encontradas` (RF07):
+```json
+{
+  "reporte": { "id": "r7", "estado": "ACTIVO", "...": "..." },
+  "parecidos": [
+    { "id": "r1", "mascota": { "nombre": "Toby", "especie": "PERRO", "color": "Café", "tamano": "MEDIANO", "senas": "Collar rojo" },
+      "fotos": ["https://.../foto.jpg"], "fecha": "...", "puntaje": 100, "distancia_km": 0.1 }
+  ]
+}
+```
+`parecidos` va ordenado por `puntaje` (0 a 100) y luego por cercanía.
 
 ## Coincidencias (C5-31 / C5-36)
 

@@ -22,7 +22,20 @@
     },
     "plugins": [
       "expo-secure-store",
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Código 5 usa tus fotos para mostrar la mascota en el reporte.",
+          "cameraPermission": "Código 5 usa la cámara para tomar la foto de la mascota del reporte."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Código 5 usa tu ubicación para ubicar el reporte en el mapa."
+        }
+      ]
     ]
   }
 }
