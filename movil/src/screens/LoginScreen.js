@@ -1,0 +1,152 @@
+// CU02 Iniciar sesión (RF02): correo y contraseña, o huella si ya se activó.
+import { useState } from 'react';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Boton from '../components/Boton';
+import Campo from '../components/Campo';
+import Fondo from '../components/Fondo';
+import { useAuth } from '../context/AuthContext';
+import { colores, espacio, sombra, texto } from '../theme';
+
+export default function LoginScreen({ navigation }) {
+  const { entrar, entrarConHuella, sesionBloqueada } = useAuth();
+  const [correo, setCorreo] = useState('');
+  const [contrasena, setContrasena] = useState('');
+  const [error, setError] = useState('');
+  const [enviando, setEnviando] = useState(false);
+
+  async function alIngresar() {
+    if (!correo.trim() || !contrasena) {
+      setError('Escribe tu correo y tu contraseña.');
+      return;
+    }
+    setError('');
+    setEnviando(true);
+    try {
+      await entrar(correo, contrasena);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setEnviando(false);
+    }
+  }
+
+  async function alUsarHuella() {
+    setError('');
+    const ok = await entrarConHuella();
+    if (!ok) setError('No se pudo verificar. Ingresa con tu contraseña.');
+  }
+
+  return (
+    <Fondo>
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={estilos.contenido} keyboardShouldPersistTaps="handled">
+          <View style={estilos.encabezado}>
+            <View style={estilos.logo}>
+              <Text style={{ fontSize: 40 }}>🐾</Text>
+            </View>
+            <Text style={estilos.marca}>Código 5 · Mascotas</Text>
+            <Text style={texto.titulo}>Ingresar</Text>
+            <Text style={texto.subtitulo}>
+              Reporta, busca y reúne mascotas perdidas después de una emergencia.
+            </Text>
+          </View>
+
+          {sesionBloqueada && (
+            <View style={estilos.bloqueHuella}>
+              <Text style={texto.cuerpo}>Hola de nuevo, {sesionBloqueada.usuario.nombre}.</Text>
+              <Boton titulo="Ingresar con huella o rostro" onPress={alUsarHuella} />
+            </View>
+          )}
+
+          <Campo
+            etiqueta="Correo"
+            value={correo}
+            onChangeText={setCorreo}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            placeholder="tucorreo@ejemplo.com"
+          />
+          <Campo
+            etiqueta="Contraseña"
+            value={contrasena}
+            onChangeText={setContrasena}
+            secureTextEntry
+            autoComplete="password"
+          />
+
+          {error ? <Text style={estilos.error}>{error}</Text> : null}
+
+          <View style={estilos.acciones}>
+            <Boton
+              titulo="Ingresar"
+              onPress={alIngresar}
+              cargando={enviando}
+              variante={sesionBloqueada ? 'secundario' : 'primario'}
+            />
+            <Boton titulo="Crear cuenta" variante="secundario" onPress={() => navigation.navigate('Registro')} />
+          </View>
+
+          {/* RF04: en una emergencia se puede reportar sin crear cuenta. */}
+          <View style={estilos.sinCuenta}>
+            <Text style={texto.etiqueta}>¿Es urgente? Reporta sin crear cuenta</Text>
+            <Boton
+              titulo="Perdí mi mascota"
+              variante="secundario"
+              onPress={() => navigation.navigate('Reporte', { tipo: 'PERDIDA' })}
+            />
+            <Boton
+              titulo="Encontré un animal"
+              variante="secundario"
+              onPress={() => navigation.navigate('Reporte', { tipo: 'ENCONTRADA' })}
+            />
+            <View style={estilos.fila}>
+              <View style={{ flex: 1 }}>
+                <Boton titulo="🔍 Buscar" variante="secundario" onPress={() => navigation.navigate('Buscar')} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Boton titulo="🗺️ Mapa" variante="secundario" onPress={() => navigation.navigate('Mapa')} />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+      </SafeAreaView>
+    </Fondo>
+  );
+}
+
+const estilos = StyleSheet.create({
+  contenido: { padding: espacio.l, paddingTop: espacio.xl },
+  encabezado: { gap: espacio.s, marginBottom: espacio.xl },
+  logo: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colores.superficie,
+    marginBottom: espacio.s,
+    ...sombra,
+  },
+  marca: { fontSize: 14, fontWeight: '700', color: colores.primario, letterSpacing: 0.5 },
+  fila: { flexDirection: 'row', gap: espacio.s },
+  bloqueHuella: {
+    gap: espacio.m,
+    padding: espacio.m,
+    marginBottom: espacio.l,
+    borderRadius: 12,
+    backgroundColor: colores.primarioSuave,
+  },
+  error: { color: colores.alerta, fontSize: 14, marginBottom: espacio.m },
+  acciones: { gap: espacio.m, marginTop: espacio.s },
+  sinCuenta: {
+    gap: espacio.m,
+    marginTop: espacio.xl,
+    paddingTop: espacio.l,
+    borderTopWidth: 1,
+    borderTopColor: colores.borde,
+  },
+});

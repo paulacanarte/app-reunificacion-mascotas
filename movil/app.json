@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "movil",
+    "slug": "movil",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-sqlite",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Código 5 usa tus fotos para mostrar la mascota en el reporte.",
+          "cameraPermission": "Código 5 usa la cámara para tomar la foto de la mascota del reporte."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Código 5 usa tu ubicación para ubicar el reporte en el mapa."
+        }
+      ]
+    ]
+  }
+}
