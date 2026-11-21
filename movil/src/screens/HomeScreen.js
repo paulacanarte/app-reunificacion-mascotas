@@ -49,6 +49,14 @@ const ACCIONES = [
     suave: colores.refugioSuave,
     ir: ['Mapa'],
   },
+  {
+    titulo: 'Razas de perros',
+    detalle: 'Consulta la Dog API (ejemplo MVVM)',
+    icono: '🐶',
+    color: colores.primario,
+    suave: colores.primarioSuave,
+    ir: ['Razas'],
+  },
 ];
 
 export default function HomeScreen({ navigation }) {

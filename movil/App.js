@@ -13,6 +13,8 @@ import ReporteEnviadoScreen from './src/screens/ReporteEnviadoScreen';
 import BuscarScreen from './src/screens/BuscarScreen';
 import DetalleReporteScreen from './src/screens/DetalleReporteScreen';
 import MapaScreen from './src/screens/MapaScreen';
+import RazasScreen from './src/razas/views/RazasScreen';
+import { dogService } from './src/razas/di/contenedor';
 import { colores } from './src/theme';
 
 const Stack = createNativeStackNavigator();
@@ -61,6 +63,10 @@ function Rutas() {
       <Stack.Screen name="Buscar" component={BuscarScreen} options={{ ...conEncabezado, title: 'Buscar mascotas' }} />
       <Stack.Screen name="DetalleReporte" component={DetalleReporteScreen} options={{ ...conEncabezado, title: 'Detalle' }} />
       <Stack.Screen name="Mapa" component={MapaScreen} options={{ ...conEncabezado, title: 'Mapa' }} />
+      {/* Tarea MVVM: el servicio se inyecta aquí, la pantalla no sabe cuál es. */}
+      <Stack.Screen name="Razas" options={{ ...conEncabezado, title: 'Razas de perros' }}>
+        {(props) => <RazasScreen {...props} servicio={dogService} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }
