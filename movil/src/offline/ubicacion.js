@@ -41,3 +41,20 @@ export async function obtenerUbicacion() {
     precision: posicion.coords.accuracy ? Math.round(posicion.coords.accuracy) : null,
   };
 }
+
+// Para buscar y para el mapa basta una ubicación aproximada y rápida.
+// Devuelve { lat, lon } o null si no hay permiso o no se pudo obtener; nunca lanza.
+export async function ubicacionRapida() {
+  try {
+    const permiso = await Location.requestForegroundPermissionsAsync();
+    if (!permiso.granted) return null;
+    const posicion =
+      (await Location.getLastKnownPositionAsync({ maxAge: 10 * 60000 }).catch(() => null)) ??
+      (await conLimite(Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }), 8000).catch(
+        () => null
+      ));
+    return posicion ? { lat: posicion.coords.latitude, lon: posicion.coords.longitude } : null;
+  } catch {
+    return null;
+  }
+}

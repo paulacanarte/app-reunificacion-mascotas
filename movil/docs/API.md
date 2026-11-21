@@ -106,6 +106,24 @@ Respuesta 201 de `POST /reportes/encontradas` (RF07):
 ```
 `parecidos` va ordenado por `puntaje` (0 a 100) y luego por cercanía.
 
+### GET /reportes (CU07, C5-36)
+
+Parámetros, todos opcionales: `tipo` (PERDIDA | ENCONTRADA), `especie`, `tamano`, `color` (texto que contenga),
+`desde` (fecha ISO), `lat`, `lon`, `radio_km`. Sin `lat`/`lon`, ordena del más reciente al más antiguo.
+
+Respuesta 200:
+```json
+{ "resultados": [
+  { "id": "r1", "tipo": "PERDIDA", "estado": "ACTIVO",
+    "mascota": { "nombre": "Toby", "especie": "PERRO", "raza": "Criollo", "color": "Café", "tamano": "MEDIANO", "senas": "Collar rojo" },
+    "fotos": ["https://.../foto.jpg"], "fecha": "...", "descripcion": "...",
+    "ubicacion": { "type": "Point", "coordinates": [-75.6945, 4.815] },
+    "distancia_km": 0.4 }
+] }
+```
+`GET /reportes/{id}` devuelve un solo reporte con la misma forma (sin `distancia_km`). Ninguno trae
+`contacto` ni `id_cliente`, y la ubicación ya viene aproximada (RNF02).
+
 ## Coincidencias (C5-31 / C5-36)
 
 | Método y ruta | Caso de uso | Uso |
@@ -124,6 +142,18 @@ Respuesta 201 de `POST /reportes/encontradas` (RF07):
 | GET /conversaciones/{id}/mensajes | CU10 | Mensajes |
 | POST /conversaciones/{id}/mensajes | CU10 | Enviar mensaje |
 | GET /mapa?lat=&lon=&radio_km= | CU11 | Refugios, puntos de recepción y reportes (RF12) |
+
+Respuesta 200 de `GET /mapa` (C5-37): `reportes` con la misma forma de `GET /reportes` y `puntos`:
+```json
+{ "reportes": [ ... ],
+  "puntos": [
+    { "id": "p1", "tipo": "REFUGIO", "nombre": "Refugio Huellitas", "direccion": "Cra. 12 #20-15",
+      "horario": "Todos los días, 7 a. m. a 7 p. m.", "capacidad": 40, "ocupados": 26,
+      "ubicacion": { "type": "Point", "coordinates": [-75.686, 4.8185] } },
+    { "id": "p3", "tipo": "PUNTO_RECEPCION", "nombre": "Punto de recepción Parque Olaya", "...": "..." }
+  ] }
+```
+`tipo` del punto: REFUGIO | PUNTO_RECEPCION. Los puntos de recepción no llevan `capacidad`.
 
 ## Refugios y moderación (C5-33)
 

@@ -4,6 +4,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Boton from '../components/Boton';
 import Campo from '../components/Campo';
+import Fondo from '../components/Fondo';
 import { useAuth } from '../context/AuthContext';
 import { colores, espacio, texto } from '../theme';
 
@@ -50,7 +51,8 @@ export default function RegisterScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={estilos.pantalla}>
+    <Fondo>
+    <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={estilos.contenido} keyboardShouldPersistTaps="handled">
           <Text style={[texto.titulo, { marginBottom: espacio.l }]}>Crear cuenta</Text>
@@ -110,11 +112,11 @@ export default function RegisterScreen({ navigation }) {
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
+    </Fondo>
   );
 }
 
 const estilos = StyleSheet.create({
-  pantalla: { flex: 1, backgroundColor: colores.fondo },
   contenido: { padding: espacio.l },
   roles: { flexDirection: 'row', flexWrap: 'wrap', gap: espacio.s, marginTop: espacio.s, marginBottom: espacio.s },
   rol: {

@@ -10,6 +10,9 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ReporteScreen from './src/screens/ReporteScreen';
 import ReporteEnviadoScreen from './src/screens/ReporteEnviadoScreen';
+import BuscarScreen from './src/screens/BuscarScreen';
+import DetalleReporteScreen from './src/screens/DetalleReporteScreen';
+import MapaScreen from './src/screens/MapaScreen';
 import { colores } from './src/theme';
 
 const Stack = createNativeStackNavigator();
@@ -17,7 +20,7 @@ const Stack = createNativeStackNavigator();
 const conEncabezado = {
   headerShown: true,
   headerTintColor: colores.primario,
-  headerStyle: { backgroundColor: colores.fondo },
+  headerStyle: { backgroundColor: colores.fondoArriba }, // mismo tono que el inicio del degradado
   headerTitleStyle: { color: colores.tinta },
   headerShadowVisible: false,
   headerBackTitle: 'Atrás',
@@ -54,6 +57,10 @@ function Rutas() {
         })}
       />
       <Stack.Screen name="ReporteEnviado" component={ReporteEnviadoScreen} options={{ gestureEnabled: false }} />
+      {/* Buscar y el mapa también sirven sin cuenta: en una emergencia cualquiera puede ayudar. */}
+      <Stack.Screen name="Buscar" component={BuscarScreen} options={{ ...conEncabezado, title: 'Buscar mascotas' }} />
+      <Stack.Screen name="DetalleReporte" component={DetalleReporteScreen} options={{ ...conEncabezado, title: 'Detalle' }} />
+      <Stack.Screen name="Mapa" component={MapaScreen} options={{ ...conEncabezado, title: 'Mapa' }} />
     </Stack.Navigator>
   );
 }

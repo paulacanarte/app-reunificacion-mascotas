@@ -13,19 +13,9 @@ import { RUTA_REPORTE } from '../api/reportes';
 import { enviarOEncolar } from '../offline/queue';
 import { useConexion } from '../offline/useConexion';
 import { ErrorUbicacion, obtenerUbicacion } from '../offline/ubicacion';
+import Fondo from '../components/Fondo';
+import { ESPECIES, TAMANOS } from '../formato';
 import { colores, espacio, texto } from '../theme';
-
-export const ESPECIES = [
-  { valor: 'PERRO', texto: 'Perro' },
-  { valor: 'GATO', texto: 'Gato' },
-  { valor: 'OTRO', texto: 'Otro' },
-];
-
-export const TAMANOS = [
-  { valor: 'PEQUENO', texto: 'Pequeño' },
-  { valor: 'MEDIANO', texto: 'Mediano' },
-  { valor: 'GRANDE', texto: 'Grande' },
-];
 
 const CUANDO = [
   { valor: 0, texto: 'Hoy' },
@@ -169,7 +159,8 @@ export default function ReporteScreen({ navigation, route }) {
   }
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={estilos.pantalla}>
+    <Fondo>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
       {!conectado && (
         <View style={estilos.banner} accessibilityRole="alert">
           <Text style={estilos.textoBanner}>
@@ -276,11 +267,11 @@ export default function ReporteScreen({ navigation, route }) {
         />
       </ScrollView>
     </KeyboardAvoidingView>
+    </Fondo>
   );
 }
 
 const estilos = StyleSheet.create({
-  pantalla: { flex: 1, backgroundColor: colores.fondo },
   banner: { backgroundColor: colores.avisoSuave, borderBottomWidth: 2, borderBottomColor: colores.aviso, padding: espacio.m },
   textoBanner: { fontSize: 14, color: colores.tinta },
   contenido: { padding: espacio.l, paddingBottom: espacio.xl * 2 },

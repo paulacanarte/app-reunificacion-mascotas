@@ -7,10 +7,15 @@ App en React Native con Expo (SDK 58) para la reunificación de mascotas tras un
 - **C5-35**: reportar mascota perdida (CU05) y animal encontrado (CU06) con fotos (CU04, RN01),
   ubicación GPS, envío sin conexión por la cola y reporte sin cuenta (RF04). Al reportar un
   hallazgo se muestran las mascotas perdidas parecidas (RF07).
+- **C5-36**: buscar mascotas por tipo, especie, tamaño, color, fecha y distancia, ordenadas por
+  cercanía (CU07, RF06, RF11), y detalle del reporte con zona aproximada de 500 m (RNF02).
+- **C5-37**: mapa con mascotas perdidas y encontradas (ícono de su especie), refugios con cupos y
+  puntos de recepción (CU11, RF12, RF14).
+- Diseño: fondo en degradado menta–crema con huellas, tarjetas con ícono y sombra.
 
 Mientras la API no esté publicada, la app usa datos simulados (`USAR_MOCK = true` en `src/config.js`).
-Cuenta de prueba: `dueno@demo.com` / `demo1234`. El simulador trae tres mascotas perdidas de ejemplo
-(Toby, Luna y Rocky) para probar las coincidencias.
+Cuenta de prueba: `dueno@demo.com` / `demo1234`. El simulador trae, en Pereira, seis mascotas perdidas,
+tres animales encontrados, dos refugios y dos puntos de recepción de ejemplo.
 
 ## Instalación
 
@@ -39,6 +44,8 @@ Notas:
   *development build* (se ve en la etapa de publicación).
 - Para conectar con la API real: poner `USAR_MOCK = false` y en `API_URL` la IP del computador
   que corre FastAPI, no `localhost`.
+- El mapa funciona en Expo Go sin configurar nada. Para publicar la app en Android hará falta una
+  clave de Google Maps (`android.config.googleMaps.apiKey` en `app.json`).
 
 ## Probar la C5-35
 
@@ -47,6 +54,15 @@ Notas:
 3. **Coincidencias (RF07)**: reportar un perro mediano color «Café» encontrado → aparece Toby al 100 %.
 4. **Sin conexión (RNF03)**: activar el modo avión, publicar un reporte → queda «guardado».
    En Inicio aparece «1 reporte pendiente». Al quitar el modo avión se publica solo y el aviso desaparece.
+
+## Probar la C5-36 y la C5-37
+
+1. **Buscar**: Inicio → «Buscar mascotas». Filtrar por «Gato» o escribir «café» en Color. Tocar un
+   resultado abre el detalle con fotos, rasgos y la zona aproximada en un mapa pequeño.
+2. **Mapa**: Inicio → «Ver mapa». Cada mascota es un ícono 🐶 / 🐱 / 🐾 con borde naranja (perdida)
+   o verde (encontrada); los refugios 🏠 y puntos de recepción 📦 en azul. Los botones de arriba
+   muestran u ocultan cada capa. Tocar un ícono abre su tarjeta con «Ver detalle» o los cupos del refugio.
+3. Ambos funcionan también sin cuenta, desde los botones «Buscar» y «Mapa» de la pantalla de ingreso.
 
 ## Estructura
 
@@ -69,7 +85,8 @@ Notas:
    publica el reporte y lo borra de la cola.
 4. Cada reporte lleva un `id_cliente` (UUID) para que un reintento no lo duplique en el servidor.
 
-## Siguiente: C5-36
+## Pendiente
 
-Buscar mascotas por especie, rasgos, zona y fecha (CU07, `GET /reportes`), detalle del reporte y
-coincidencias (CU08, CU09).
+- Coincidencias de mis reportes y confirmación (CU08, CU09) y chat con quien reportó (CU10):
+  el botón del detalle avisa que se conectan cuando la API esté publicada.
+- Elegir el lugar del reporte tocando el mapa, en vez de usar solo la ubicación actual.

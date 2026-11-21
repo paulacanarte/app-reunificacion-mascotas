@@ -4,8 +4,9 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } fr
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Boton from '../components/Boton';
 import Campo from '../components/Campo';
+import Fondo from '../components/Fondo';
 import { useAuth } from '../context/AuthContext';
-import { colores, espacio, texto } from '../theme';
+import { colores, espacio, sombra, texto } from '../theme';
 
 export default function LoginScreen({ navigation }) {
   const { entrar, entrarConHuella, sesionBloqueada } = useAuth();
@@ -37,10 +38,15 @@ export default function LoginScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={estilos.pantalla}>
+    <Fondo>
+    <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={estilos.contenido} keyboardShouldPersistTaps="handled">
           <View style={estilos.encabezado}>
+            <View style={estilos.logo}>
+              <Text style={{ fontSize: 40 }}>🐾</Text>
+            </View>
+            <Text style={estilos.marca}>Código 5 · Mascotas</Text>
             <Text style={texto.titulo}>Ingresar</Text>
             <Text style={texto.subtitulo}>
               Reporta, busca y reúne mascotas perdidas después de una emergencia.
@@ -96,17 +102,37 @@ export default function LoginScreen({ navigation }) {
               variante="secundario"
               onPress={() => navigation.navigate('Reporte', { tipo: 'ENCONTRADA' })}
             />
+            <View style={estilos.fila}>
+              <View style={{ flex: 1 }}>
+                <Boton titulo="🔍 Buscar" variante="secundario" onPress={() => navigation.navigate('Buscar')} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Boton titulo="🗺️ Mapa" variante="secundario" onPress={() => navigation.navigate('Mapa')} />
+              </View>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </Fondo>
   );
 }
 
 const estilos = StyleSheet.create({
-  pantalla: { flex: 1, backgroundColor: colores.fondo },
   contenido: { padding: espacio.l, paddingTop: espacio.xl },
   encabezado: { gap: espacio.s, marginBottom: espacio.xl },
+  logo: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colores.superficie,
+    marginBottom: espacio.s,
+    ...sombra,
+  },
+  marca: { fontSize: 14, fontWeight: '700', color: colores.primario, letterSpacing: 0.5 },
+  fila: { flexDirection: 'row', gap: espacio.s },
   bloqueHuella: {
     gap: espacio.m,
     padding: espacio.m,
