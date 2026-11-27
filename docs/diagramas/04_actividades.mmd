@@ -1,0 +1,31 @@
+flowchart TD
+    subgraph D[Dueño]
+        A0((Inicio)) --> A1[Reportar mascota perdida]
+        A1 --> A2{¿Hay conexión?}
+        A2 -- No --> A3[Guardar reporte en el dispositivo]
+        A3 --> A4[Esperar señal y sincronizar]
+        A9[Revisar coincidencia] --> A10{¿Es mi mascota?}
+        A10 -- Sí --> A11[Coordinar entrega por chat]
+        A11 --> A12[Confirmar entrega]
+    end
+    subgraph C[Ciudadano / veterinario]
+        B1[Reportar animal encontrado] --> B2[Resguardar al animal]
+        B3[Confirmar entrega]
+    end
+    subgraph S[Sistema]
+        S1[Publicar reporte con ubicación aproximada] --> S2[Buscar candidatos: misma especie y menos de 20 km]
+        S2 --> S3[Comparar fotos y características]
+        S3 --> S4{¿Similitud de al menos 70 %?}
+        S4 -- No --> S5[Mantener reportes activos]
+        S4 -- Sí --> S6[Crear coincidencia y notificar al dueño]
+        S7[Descartar coincidencia] --> S5
+        S8[Cambiar estados a Reunificada y cerrar caso] --> F((Fin))
+    end
+    A2 -- Sí --> S1
+    A4 --> S1
+    B2 --> S1
+    S6 --> A9
+    A10 -- No --> S7
+    A11 --> B3
+    A12 --> S8
+    B3 --> S8

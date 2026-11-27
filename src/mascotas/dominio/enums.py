@@ -1,0 +1,63 @@
+"""Enumeraciones del dominio (ver sección 8.2 del documento)."""
+from enum import Enum
+
+
+class Rol(str, Enum):
+    DUENO = "DUENO"
+    CIUDADANO = "CIUDADANO"
+    VETERINARIO = "VETERINARIO"
+    FUNDACION = "FUNDACION"
+    ADMIN = "ADMIN"
+
+
+class EstadoCuenta(str, Enum):
+    PENDIENTE_VERIFICACION = "PENDIENTE_VERIFICACION"
+    ACTIVA = "ACTIVA"
+    SUSPENDIDA = "SUSPENDIDA"
+    BLOQUEADA = "BLOQUEADA"
+
+
+class Especie(str, Enum):
+    PERRO = "PERRO"
+    GATO = "GATO"
+    OTRO = "OTRO"
+
+
+class Tamano(str, Enum):
+    PEQUENO = "PEQUENO"
+    MEDIANO = "MEDIANO"
+    GRANDE = "GRANDE"
+
+
+class TipoReporte(str, Enum):
+    PERDIDA = "PERDIDA"
+    ENCONTRADA = "ENCONTRADA"
+
+
+class EstadoReporte(str, Enum):
+    PERDIDA = "PERDIDA"
+    ENCONTRADA = "ENCONTRADA"
+    POSIBLE_COINCIDENCIA = "POSIBLE_COINCIDENCIA"
+    EN_VERIFICACION = "EN_VERIFICACION"
+    REUNIFICADA = "REUNIFICADA"
+    CERRADA = "CERRADA"
+
+
+class EstadoCoincidencia(str, Enum):
+    PENDIENTE = "PENDIENTE"
+    CONFIRMADA = "CONFIRMADA"
+    RECHAZADA = "RECHAZADA"
+    ENTREGADA = "ENTREGADA"
+
+
+class TipoPunto(str, Enum):
+    REFUGIO = "REFUGIO"
+    PUNTO_RECEPCION = "PUNTO_RECEPCION"
+
+
+class AccionModeracion(str, Enum):
+    RETIRAR_REPORTE = "RETIRAR_REPORTE"
+    BLOQUEAR_CONVERSACION = "BLOQUEAR_CONVERSACION"
+    SUSPENDER_CUENTA = "SUSPENDER_CUENTA"
+    BLOQUEAR_CUENTA = "BLOQUEAR_CUENTA"
+    DESCARTAR_DENUNCIA = "DESCARTAR_DENUNCIA"

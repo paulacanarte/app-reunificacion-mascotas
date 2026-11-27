@@ -1,0 +1,29 @@
+sequenceDiagram
+    actor Ciudadano
+    participant App as App móvil
+    participant API as API REST
+    participant RS as ServicioReportes
+    participant CS as ServicioCoincidencias
+    participant IA as ComparadorSimilitud
+    participant DB as MongoDB
+    participant NS as Notificador
+    actor Dueño
+    Ciudadano->>App: "Encontré un animal" + fotos + ubicación
+    App->>API: POST /reportes (tipo=ENCONTRADA)
+    API->>RS: reportar_encontrada(datos)
+    RS->>DB: insert_one(reportes)
+    RS->>CS: buscar_coincidencias(reporte)
+    CS->>DB: find(perdidas, misma especie)
+    DB-->>CS: candidatos
+    loop Por cada candidato
+        CS->>IA: comparar(perdida, encontrada)
+        IA-->>CS: similitud
+    end
+    opt similitud >= 70 % y distancia < 20 km
+        CS->>DB: insert_one(coincidencias)
+        CS->>DB: estados a POSIBLE_COINCIDENCIA
+        CS->>NS: notificar(dueño, coincidencia)
+        NS-->>Dueño: Notificación push
+    end
+    API-->>App: 201 Created
+    App-->>Ciudadano: Reporte publicado

@@ -1,0 +1,29 @@
+sequenceDiagram
+    actor Dueño
+    participant App as App móvil
+    participant API as API REST
+    participant CS as ServicioCoincidencias
+    participant Chat as ServicioMensajeria
+    participant DB as MongoDB
+    actor Ciudadano
+    Dueño->>App: Abre notificación
+    App->>API: GET /coincidencias/{id}
+    API-->>App: Reportes lado a lado + puntaje
+    alt Es mi mascota
+        Dueño->>App: Confirmar
+        App->>API: POST /coincidencias/{id}/confirmar
+        API->>CS: confirmar(id, dueño)
+        CS->>DB: estados a EN_VERIFICACION
+        CS->>DB: insert_one(conversaciones)
+        Dueño->>Chat: enviar(mensaje)
+        Chat-->>Ciudadano: Notificación de mensaje
+        Dueño->>API: POST /coincidencias/{id}/entrega
+        Ciudadano->>API: POST /coincidencias/{id}/entrega
+        API->>CS: registrar_entrega()
+        CS->>DB: estados a REUNIFICADA
+    else No es mi mascota
+        Dueño->>App: Rechazar
+        App->>API: POST /coincidencias/{id}/rechazar
+        API->>CS: rechazar(id)
+        CS->>DB: estados vuelven a PERDIDA / ENCONTRADA
+    end
